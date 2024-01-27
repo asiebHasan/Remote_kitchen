@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block headline %}
+  Employees
+{% endblock %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col-xl-4 col-lg-7">
+      <div class="form-floating">
+        <select class="form-select" name="restaurants" id="restaurants" aria-label="Floating label select example">
+          {% for restaurant in restaurants %}
+            <option value="{{ restaurant.id }}">{{ restaurant.name }}</option>
+          {% endfor %}
+        </select>
+        <label for="floatingSelect">Select your restaurant</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-xl-6 col-lg-7">
+      <div class="card shadow mb-4">
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="result-message" id="result-message"></div>
+          <form id="add-employee" method="post">
+            {% csrf_token %}
+            <h1 class="h3 mb-5 font-weight-normal text-left">Sign up an employee</h1>
+
+            <label for="inputUsername" class="sr-only">Username</label>
+            <input type="text" name="username" id="inputUsername" class="form-control mb-3" value="{{ fieldValue.username }}" placeholder="Username" required autofocus />
+            <div class="invalid-feedback username-feedback text-left" style="display: none;"></div>
+
+            <label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" name="email" id="inputEmail" class="form-control mb-3" value="{{ fieldValue.email }}" placeholder="Email address" required autofocus />
+            <div class="invalid-feedback email-feedback text-left" style="display: none;"></div>
+
+            <div class="input-group mb-3">
+              <label for="inputPassword" class="sr-only">Password</label>
+              <input type="password" name="password" id="inputPassword" class="form-control mb-3" placeholder="Password" required />
+              <span class="input-group-text mb-3" style="cursor:pointer;" id="showPasswordToggle"><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
+            </div>
+            <div class="invalid-feedback password-feedback text-left" id="password-feedback" style="display: none;">Password length must be atleas 8</div>
+
+
+            <div class="d-grid gap-2 col-6 mx-auto">
+              <button class="btn btn-lg btn-primary btn-block w-full" id="submitBtn" type="submit">Sign up</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-12 col-lg-7">
+      <div class="card shadow mb-4">
+        <!-- Card Body -->
+        <div class="card-body">
+          <h3 class="h3">Your Employees</h3>
+          <table class="table table-striped hover" id="employeeList">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Date Joined</th>
+                <!-- Add more columns as needed -->
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/employee.js' %}"></script>
+{% endblock %}

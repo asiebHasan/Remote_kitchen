@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+  Order List
+{% endblock %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col-xl-4 col-lg-7">
+      <div class="form-floating">
+        <select class="form-select" name="restaurants" id="restaurants" aria-label="Floating label select example">
+          {% for restaurant in restaurants %}
+            <option value="{{ restaurant.id }}">{{ restaurant.name }}</option>
+          {% endfor %}
+        </select>
+        <label for="floatingSelect">Select your restaurant</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-12 col-lg-7">
+      <div class="card shadow mb-4">
+        <!-- Card Body -->
+        <div class="card-body">
+          <table class="table table-striped hover" id="orderList">
+            <thead>
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Restaurant</th>
+                  <th scope="col">Items</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Ordered At</th>
+                  <th scope="col">Payment</th>
+                  <th scope="col">Action</th>
+                  <!-- Add more columns as needed -->
+                </tr>
+              </thead>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="display: none;" id="itemsDetails">
+    <div class="col-xl-12 col-lg-7">
+      <div class="card shadow mb-4">
+        <!-- Card Body -->
+        <div class="card-body">
+          items<table class="table table-striped hover" id="items">
+            <thead>
+              <thead>
+                <tr>
+                  <!-- Add more columns as needed -->
+                </tr>
+              </thead>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const restaurantSelect = document.getElementById('restaurants')
+    const orderListTable = document.getElementById('orderList').getElementsByTagName('tbody')[0]
+    const itemsDetails = document.getElementById('itemsDetails')
+    
+    function fetchRestaurantMenu(restaurantId) {
+      fetch(`/orders/api/order/?restaurant=${restaurantId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data)
+    
+          orderListTable.innerHTML = ''
+    
+          data.forEach((order) => {
+            const row = orderListTable.insertRow(-1)
+            const cell1 = row.insertCell(0)
+            const cell2 = row.insertCell(1)
+            const cell3 = row.insertCell(2)
+            const cell4 = row.insertCell(3)
+            const cell5 = row.insertCell(4)
+            const cell6 = row.insertCell(5)
+            const cell7 = row.insertCell(6)
+    
+            cell1.innerHTML = order.user_email
+            cell2.innerHTML = order.restaurant_name
+            cell4.innerHTML = order.total_price
+            cell5.innerHTML = order.created_at
+            cell6.innerHTML = order.payment_status ? `Done` : `Pending`
+            cell7.innerHTML = `<a href="${order.id}">Details</a>`
+
+            order.ordered_items.map((item) => {
+                cell3.innerHTML += `${item.menu.name} x ${item.quantity} <br>`
+            })
+          })
+        })
+        .catch((error) => console.error('Error fetching user orderList:', error))
+    }
+    
+    document.addEventListener('DOMContentLoaded', function () {
+      restaurantSelect.addEventListener('change', function () {
+        const selectedRestaurantId = this.value
+        fetchRestaurantMenu(selectedRestaurantId)
+      })
+    
+      fetchRestaurantMenu(restaurantSelect.value)
+    })
+    
+    function showItems(orderedItemsJson) {
+      const orderedItemsArray = JSON.parse(orderedItemsJson)
+      // Now, orderedItemsArray is a valid JavaScript array that you can work with
+      console.log(orderedItemsArray)
+      // Add your logic to display or process the ordered items
+    }
+  </script>
+{% endblock %}

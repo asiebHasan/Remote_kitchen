@@ -1,0 +1,43 @@
+{% extends 'accounts_base.html' %}
+{% load static %}
+
+{% block title %}
+  Registration
+{% endblock %}
+
+{% block content %}
+  <div class="card shadow m-3 col-xl-4 col-md-6 ">
+    <form class="form-signin m-4" action="{% url "register" %}"  method="post">
+      {% csrf_token %}
+      <h1 class="h3 mb-5 font-weight-normal text-center">Please sign up</h1>
+      
+      {% include "partials/messages.html" %}
+      
+      <label for="inputUsername" class="sr-only">Username</label>
+      <input type="text" name="username" id="inputUsername" class="form-control mb-3" value="{{fieldValue.username}}" placeholder="Username" required autofocus />
+      <div class="invalid-feedback username-feedback text-left" style="display: none;"></div>
+
+      <label for="inputEmail" class="sr-only">Email address</label>
+      <input type="email" name="email" id="inputEmail" class="form-control mb-3" value="{{fieldValue.email}}" placeholder="Email address" required autofocus />
+      <div class="invalid-feedback email-feedback text-left" style="display: none;"></div>
+
+      <div class="input-group mb-3">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="password" id="inputPassword" class="form-control mb-3" placeholder="Password" required />
+        <span class="input-group-text mb-3" style="cursor:pointer;" id="showPasswordToggle"><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
+      </div>
+      <div class="invalid-feedback password-feedback text-left" id="password-feedback" style="display: none;">Password length must be atleas 8</div>
+
+      <div class="input-group mb-3">
+        <span>Already have an account? <a href="{% url "login" %}">Sign in</a></span>
+      </div>
+
+      <div class="d-grid gap-2 col-6 mx-auto">
+        <button class="btn btn-lg btn-primary btn-block w-full" id="submitBtn" type="submit">Sign up</button>
+      </div>
+      
+    </form>
+  </div>
+
+  <script src="{% static 'js/register.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block headline %}
+  Menus
+{% endblock %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col-xl-4 col-lg-7">
+        <div class="form-floating">
+          <select class="form-select" name="restaurants" id="restaurants" aria-label="Floating label select example">
+            {% for restaurant in restaurants %}
+              <option value="{{ restaurant.id }}">{{ restaurant.name }}</option>
+            {% endfor %}
+          </select>
+          <label for="floatingSelect">Select your restaurant</label>
+        </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-6 col-lg-7">
+      <div class="card shadow mb-4">
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="result-message" id="result-message"></div>
+          <form id="create-menu-form">
+            {% csrf_token %}
+            <div class="mb-3 mt-3">
+              <label for="name" class="form-label">Name:</label>
+              <input type="text" class="form-control" id="name" placeholder="Name" name="name" />
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description:</label>
+              <textarea type="text" class="form-control" id="description" placeholder="Description" name="description" ></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">Price:</label>
+              <input type="text" class="form-control" id="price" placeholder="price" name="price" />
+            </div>
+            <div class="form-check mb-3">
+              
+              <input class="form-check-input" type="checkbox" value="" id="is_available" name="is_available" checked>
+              <label class="form-check-label" for="is_available">
+                Avaibility
+              </label>
+            </div>
+            <div class="form-check mb-3">
+              
+              <input class="form-check-input" type="checkbox" value="" id="is_vegetarian" name="is_vegetarian" >
+              <label class="form-check-label" for="is_vegetarian">
+                Vegetarian
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary">ADD MENU</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-12 col-lg-7">
+      <div class="card shadow mb-4">
+        <!-- Card Body -->
+        <div class="card-body">
+          <h3 class="h3">Your Restaurants</h3>
+          <table class="table table-striped hover" id="restaurantMenu">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Avaibility</th>
+                    <th scope="col">Vegetarian</th>
+                    <th scope="col">Action</th>
+                    
+                    <!-- Add more columns as needed -->
+                </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const restaurantSelect = document.getElementById('restaurants');
+
+  function fetchRestaurantMenu(restaurantId) {
+    fetch(`/restaurants/api/menus/?restaurant=${restaurantId}`)
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.getElementById('restaurantMenu').getElementsByTagName('tbody')[0];
+        
+        tableBody.innerHTML = '';
+        data.forEach(menu => {
+          const row = tableBody.insertRow(-1);
+          const cell1 = row.insertCell(0);
+          const cell2 = row.insertCell(1);
+          const cell3 = row.insertCell(2);
+          const cell4 = row.insertCell(3);
+          const cell5 = row.insertCell(4);
+          const cell6 = row.insertCell(5);
+          cell1.innerHTML = menu.name;
+          cell2.innerHTML = menu.description;
+          cell3.innerHTML = menu.price
+          cell4.innerHTML = menu.is_available ? '<i class="fas fa-check-circle m-2" style="color: green;"></i>' : '<i class="fas fa-times-circle m-2" style="color: red;"></i>';
+          cell5.innerHTML = menu.is_vegetarian ? '<i class="fas fa-check-circle m-2" style="color: green;"></i>' : '<i class="fas fa-times-circle m-2" style="color: red;"></i>';
+          cell6.innerHTML = `<a type="button" href="${menu.id}" class="btn btn-info m-2"><i class="fas fa-edit"></i></a> <button type="button" onclick=deleteMenu(${menu.id}) class="btn btn-danger m-2"><i class="fas fa-trash"></i></button>`;
+        });
+      })
+      .catch(error => console.error('Error fetching user restaurants:', error));
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    
+
+    restaurantSelect.addEventListener('change', function () {
+      const selectedRestaurantId = this.value;
+
+      fetchRestaurantMenu(selectedRestaurantId);
+    });
+
+    fetchRestaurantMenu(restaurantSelect.value);
+  });
+  
+  document.getElementById('create-menu-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const restaurantSelect = document.getElementById('restaurants');
+      restaurantSelect.addEventListener('change', function () {
+          const selectedRestaurantId = this.value;
+      });
+
+      const formData = new FormData(this);
+
+      const fetchUrl = `/restaurants/api/menus/?restaurant=${restaurantSelect.value}`;
+
+
+      const fetchOptions = {
+      method: 'POST',
+      headers: {
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          name: formData.get('name'),
+          description: formData.get('description'),
+          price: formData.get('price'),
+          is_available: document.getElementById('is_available').checked,
+          is_vegetarian: document.getElementById('is_vegetarian').checked,
+          restaurant: restaurantSelect.value, 
+      }),
+      };
+
+      fetch(fetchUrl, fetchOptions)
+      .then(response => response.json())
+      .then(data => {
+          console.log('Menu created successfully:', data);
+          fetchRestaurantMenu(restaurantSelect.value)
+          document.getElementById('create-menu-form').reset();
+      })
+      .catch(error => {
+          console.error('Error creating menu:', error);
+      });
+      
+
+      
+  });
+
+  function deleteMenu(menuId){
+    const csrftoken = getCookie('csrftoken');
+    fetch(`/restaurants/api/menu/${menuId}`, {
+      method: 'DELETE',
+      headers: {
+          'X-CSRFToken': csrftoken,
+      },
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log(`Menu with ID ${menuId} deleted successfully.`);
+            fetchRestaurantMenu(restaurantSelect.value)
+        } else {
+            console.error(`Error deleting menu with ID ${menuId}.`);
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting menu:', error);
+    });
+
+  }
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+   <a href="{% url 'restaurant-menus' %}" ><i class="fas fa-angle-left"></i> MENU </a>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-xl-8 col-lg-7">
+      <div class="card shadow mb-4">
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="result-message alert alert-sm" id="result-message" style="display: none;"></div>
+          <form id="update-menu-form">
+            {% csrf_token %}
+            <div class="mb-3 mt-3">
+              <label for="name" class="form-label">ID:</label>
+              <input type="text" class="form-control" value="{{menu.id}}" id="id"  name="id" readonly/>
+            </div>
+            <div class="mb-3 mt-3">
+              <label for="name" class="form-label">Name:</label>
+              <input type="text" class="form-control" value="{{menu.name}}" id="name" placeholder="Name" name="name" />
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description:</label>
+              <textarea type="text" class="form-control" id="description" placeholder="Description" name="description">{{menu.description}}</textarea>
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">Price:</label>
+              <input type="text" class="form-control" value="{{menu.price}}" id="price" placeholder="price" name="price" />
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="true" {% if menu.is_available %}checked{% endif %} id="is_available" name="is_available" />
+              <label class="form-check-label" for="is_available">Availability</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="true" {% if menu.is_vegetarian %}checked{% endif %} id="is_vegetarian" name="is_vegetarian" />
+              <label class="form-check-label" for="is_vegetarian">Vegetarian</label>
+            </div>
+            <button type="submit" class="btn btn-primary">SAVE MENU</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const updateForm = document.getElementById('update-menu-form');
+
+    updateForm.addEventListener('submit', function(event){
+        event.preventDefault();
+        var formData = new FormData(this);
+        
+        fetch(`/restaurants/api/menu/${formData.get('id')}/`,{
+            method: 'PUT',
+            headers: {
+              'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: formData.get('name'),
+              description: formData.get('description'),
+              price: formData.get('price'),
+              is_available: formData.get('is_available') ,
+              is_vegetarian: formData.get('is_vegetarian'), 
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          message = document.getElementById('result-message');
+          message.innerText = 'Menu updated successfully!';
+          message.classList.add("alert-success");
+          message.style.display = "block";
+        })
+        .catch((error) => {
+          document.getElementById('result-message').innerText = 'Error updating menu.'
+          console.error('Error:', error)
+        })
+    })
+</script>
+   
+{% endblock scripts %}
+

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+  <a href="{% url 'restaurants' %}"><i class="fas fa-angle-left"></i> RESTAURANT</a>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-xl-12 col-lg-7">
+      <div class="card shadow mb-4">
+        <!-- Card Body -->
+        <div class="card-body">
+          {% comment %} <h3 class="h3">Add a Restaurants</h3> {% endcomment %}
+          <div class="result-message" id="result-message"></div>
+          <form id="update-restaurant-form">
+            {% csrf_token %}
+            <div class="mb-3 mt-3">
+              <label for="name" class="form-label">ID:</label>
+              <input type="text" class="form-control w-25" id="id" placeholder="Enter your restaurant name" name="id" value="{{ restaurant.id }}" readonly />
+            </div>
+            <div class="mb-3 mt-3">
+              <label for="name" class="form-label">Name:</label>
+              <input type="text" class="form-control w-50" id="name" placeholder="Enter your restaurant name" name="name" value="{{ restaurant.name }}" />
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Address:</label>
+              <input type="text" class="form-control w-50" id="address" placeholder="Enter your restaurant's address" name="address" value="{{ restaurant.address }}" />
+            </div>
+            <button type="submit" class="btn btn-primary">UPDATE</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const updateForm = document.getElementById('update-restaurant-form')
+    const id = document.getElementById('id')
+    
+    updateForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      var formData = new FormData(this)
+      fetch(`/restaurants/api/update/${formData.get('id')}/`, {
+        method: 'PUT',
+        headers: {
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.get('name'),
+          address: formData.get('address')
+        })
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById('result-message').innerText = 'Restaurant updated successfully!'
+          fetchUserRestaurants()
+        })
+        .catch((error) => {
+          document.getElementById('result-message').innerText = 'Error updating restaurant.'
+          console.error('Error:', error)
+        })
+    })
+  </script>
+{% endblock %}
