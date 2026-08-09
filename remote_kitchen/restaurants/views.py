@@ -1,34 +1,39 @@
-from django.shortcuts import render, redirect
-from django.views import View
+from django.db.models import Count, Q
 from rest_framework import generics, permissions
+
 from .models import Restaurant, Menu
-from .serializers import RestaurantSerializer, MenuSerializer
+from .serializers import RestaurantSerializer, MenuSerializer, PublicRestaurantSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
-# Create your views here.
-class Home(View):
-    def get(self, request):
-        return render(request, "restaurants/index.html")
+class PublicRestaurantListView(generics.ListAPIView):
+    serializer_class = PublicRestaurantSerializer
+    permission_classes = [permissions.AllowAny]
 
-
-class RestaurantView(View):
-    def get(self, request, id):
-        restaurant = Restaurant.objects.get(id=id)
-        return render(request, "restaurants/edit.html", {"restaurant": restaurant})
-
-
-class RestaurantMenusView(View):
-    def get(self, request):
-        restaurants = Restaurant.objects.filter(owner=self.request.user)
-        return render(
-            request, "restaurants/menus/index.html", {"restaurants": restaurants}
+    def get_queryset(self):
+        return Restaurant.objects.annotate(
+            menu_count=Count("menus", filter=Q(menus__is_available=True))
         )
-class RestaurantMenusEditView(View):
-    def get(self, request,id):
-        menu = Menu.objects.get(id=id)
-        return render(
-            request, "restaurants/menus/edit.html", {"menu": menu}
+
+
+class PublicRestaurantDetailView(generics.RetrieveAPIView):
+    serializer_class = PublicRestaurantSerializer
+    permission_classes = [permissions.AllowAny]
+    lookup_url_kwarg = "pk"
+
+    def get_queryset(self):
+        return Restaurant.objects.annotate(
+            menu_count=Count("menus", filter=Q(menus__is_available=True))
+        )
+
+
+class PublicRestaurantMenusView(generics.ListAPIView):
+    serializer_class = MenuSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        return Menu.objects.filter(
+            restaurant_id=self.kwargs["pk"], is_available=True
         )
 
 
@@ -44,9 +49,11 @@ class RestaurantListCreateView(generics.ListCreateAPIView):
 
 
 class RestaurantRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = [IsOwnerOrReadOnly]
+
+    def get_queryset(self):
+        return Restaurant.objects.filter(owner=self.request.user)
 
 
 class RestaurantMenuListCreateView(generics.ListCreateAPIView):
@@ -62,15 +69,10 @@ class RestaurantMenuListCreateView(generics.ListCreateAPIView):
             return Menu.objects.none()
 
     def perform_create(self, serializer):
-        # Associate the menu with the authenticated user and the selected restaurant
-        serializer.save(
-           restaurant_id=self.request.data.get("restaurant")
-        )
+        serializer.save(restaurant_id=self.request.data.get("restaurant"))
 
 
 class ReastaurantMenuRetriveUpdateDestryView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
-    

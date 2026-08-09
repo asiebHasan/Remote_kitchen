@@ -26,7 +26,12 @@ SECRET_KEY = "django-insecure-v(kg=%&85a_((o@#4(awhtlnsx5)%xk$zqy)69_5%xahx-2x1$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://*.monkeycode-ai.live",
+]
 
 
 # Application definition

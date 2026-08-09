@@ -16,3 +16,11 @@ class MenuSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "restaurant",
         ]
+
+
+class PublicRestaurantSerializer(serializers.ModelSerializer):
+    menu_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Restaurant
+        fields = ["id", "name", "address", "created_at", "menu_count"]

@@ -3,11 +3,28 @@ from .models import Employee
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    employee__username = serializers.EmailField(source="employee.username", read_only=True)
-    employee__email = serializers.EmailField(source='employee.email', read_only=True)
-    employee__date_joined = serializers.EmailField(source='employee.date_joined', read_only=True)
-    restaurant__name = serializers.CharField(source="restaurant.name", read_only=True)
+    username = serializers.CharField(source="employee.username", read_only=True)
+    email = serializers.EmailField(source="employee.email", read_only=True)
+    date_joined = serializers.DateTimeField(source="employee.date_joined", read_only=True)
+    restaurant_name = serializers.CharField(source="restaurant.name", read_only=True)
+    employee_id = serializers.IntegerField(source="employee.id", read_only=True)
 
     class Meta:
         model = Employee
-        fields = ['employee__username','employee__email','employee__date_joined', 'restaurant__name']
+        fields = [
+            "id",
+            "employee_id",
+            "username",
+            "email",
+            "date_joined",
+            "restaurant",
+            "restaurant_name",
+        ]
+        read_only_fields = [
+            "id",
+            "employee_id",
+            "username",
+            "email",
+            "date_joined",
+            "restaurant_name",
+        ]

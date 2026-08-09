@@ -1,14 +1,20 @@
-from django.shortcuts import render, redirect
-from django.views import View
 import json
-from django.http import JsonResponse
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from .models import CustomUser
-from restaurants.models import Restaurant
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT
+from rest_framework.views import APIView
+
 from employees.models import Employee
+from restaurants.models import Restaurant
+from .models import CustomUser
+
 
 class UsernameValidationView(View):
     def post(self, request):
@@ -50,87 +56,134 @@ class EmailValidationView(View):
         return JsonResponse({"email_valid": True})
 
 
-class RegistrationView(View):
+def _user_payload(user):
+    return {
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "is_owner": user.is_owner,
+        "is_employee": user.is_employee,
+        "is_customer": user.is_customer,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "date_joined": user.date_joined.isoformat(),
+    }
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class CsrfTokenView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
-        return render(request, "accounts/register.html")
+        token = request.META.get("CSRF_COOKIE") or request.COOKIES.get("csrftoken")
+        return Response({"csrfToken": token})
+
+
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(_user_payload(request.user))
+
+
+class LoginAPIView(APIView):
+    permission_classes = [AllowAny]
 
     def post(self, request):
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
+        username = request.data.get("username")
+        password = request.data.get("password")
 
-        is_employee = request.POST.get("is_employee") == "true"
-        restaurant_id = request.POST.get('restaurant_id')
-        
-        context = {"fieldValue": request.POST}
+        if not username or not password:
+            return Response(
+                {"error": "Please fill in all fields"}, status=HTTP_400_BAD_REQUEST
+            )
 
-        if not CustomUser.objects.filter(username=username).exists():
-            if not CustomUser.objects.filter(email=email).exists():
-                if len(password) < 6:
-                    messages.error(request, "Password too short")
-                    return render(request, "accounts/register.html", context)
+        user = authenticate(request, username=username, password=password)
 
-                user = CustomUser.objects.create_user(username=username, email=email)
+        if not user:
+            return Response(
+                {"error": "Invalid credentials, try again"}, status=HTTP_400_BAD_REQUEST
+            )
 
-                if is_employee:
-                    user.is_employee = True
-                    user.set_password(password)
-                    user.save()
-                    
-                    Employee.objects.create(employee=user, restaurant=Restaurant.objects.get(id=restaurant_id)).save()
-                    
-                else:
-                    user.is_owner = True
-                    user.set_password(password)
-                    user.save()
-                
+        if not user.is_active:
+            return Response(
+                {"error": "Account is not active, please check your email"},
+                status=HTTP_400_BAD_REQUEST,
+            )
 
-                messages.success(
-                    request,
-                    "Account successfully created",
+        login(request, user)
+        return Response(_user_payload(user), status=HTTP_200_OK)
+
+
+class RegisterAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = request.data.get("username")
+        email = request.data.get("email")
+        password = request.data.get("password")
+        is_employee = request.data.get("is_employee") in (True, "true", "True")
+        is_owner = request.data.get("is_owner") in (True, "true", "True")
+        is_customer = request.data.get("is_customer") in (True, "true", "True")
+        restaurant_id = request.data.get("restaurant_id")
+
+        if not username or not email or not password:
+            return Response(
+                {"error": "Please fill in all fields"}, status=HTTP_400_BAD_REQUEST
+            )
+
+        if CustomUser.objects.filter(username=username).exists():
+            return Response(
+                {"error": "Username already taken, choose another username"},
+                status=HTTP_409_CONFLICT,
+            )
+
+        if CustomUser.objects.filter(email=email).exists():
+            return Response(
+                {"error": "Email already taken, choose another email"},
+                status=HTTP_409_CONFLICT,
+            )
+
+        if len(password) < 6:
+            return Response(
+                {"error": "Password too short"}, status=HTTP_400_BAD_REQUEST
+            )
+
+        user = CustomUser.objects.create_user(username=username, email=email)
+        user.set_password(password)
+
+        if is_employee:
+            if not restaurant_id:
+                user.delete()
+                return Response(
+                    {"error": "Restaurant is required for employee accounts"},
+                    status=HTTP_400_BAD_REQUEST,
                 )
+            try:
+                restaurant = Restaurant.objects.get(id=restaurant_id)
+            except Restaurant.DoesNotExist:
+                user.delete()
+                return Response(
+                    {"error": "Selected restaurant does not exist"},
+                    status=HTTP_400_BAD_REQUEST,
+                )
+            user.is_employee = True
+            user.save()
+            Employee.objects.create(employee=user, restaurant=restaurant)
+        elif is_owner:
+            user.is_owner = True
+            user.save()
+        else:
+            # Default to a customer account when no explicit role is given.
+            user.is_customer = True
+            user.save()
 
-                return JsonResponse({"status": "success"})
-
-        messages.error(request, "Invalid Username/email")
-        return JsonResponse({"status": "error"})
+        return Response({"status": "success", "user": _user_payload(user)})
 
 
-class LoginView(View):
-    def get(self, request):
-        return render(request, "accounts/login.html")
+class LogoutAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-
-        if username and password:
-            user = authenticate(request, username=username, password=password)
-
-            if user:
-                if user.is_active:
-                    login(request, user)
-                    messages.success(
-                        request,
-                        f"Welcome, {user.get_username()}! You are now logged in",
-                    )
-                    return redirect("home")
-                else:
-                    messages.error(
-                        request, "Account is not active, please check your email"
-                    )
-                    return render(request, "accounts/login.html")
-            else:
-                messages.error(request, "Invalid credentials, try again")
-                return render(request, "accounts/login.html")
-
-        messages.error(request, "Please fill in all fields")
-        return render(request, "accounts/login.html")
-
-
-class LogoutView(View):
-    def get(self, request):
         logout(request)
-        messages.success(request, "You have been logged out")
-        print("logged out")
-        return redirect("login")
+        return Response({"status": "success"})

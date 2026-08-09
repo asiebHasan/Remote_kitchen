@@ -1,16 +1,36 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.Home.as_view(), name='restaurants'),
-    path('<int:id>/', views.RestaurantView.as_view(), name = 'restaurant-view'),
-    path('menus/', views.RestaurantMenusView.as_view(), name = 'restaurant-menus'),
-    path('menus/<int:id>', views.RestaurantMenusEditView.as_view(), name = 'restaurant-menus'),
-    
-    path('api/restaurants/', views.RestaurantListCreateView.as_view(), name='restaurant-list'),
-    path('api/create/', views.RestaurantListCreateView.as_view(), name='restaurant-list-create'),
-    path('api/update/<int:pk>/', views.RestaurantRetrieveUpdateDestroyView.as_view(), name='restaurant-retrieve-update-destroy'),
-    
-    path('api/menus/', views.RestaurantMenuListCreateView.as_view(), name='menu-list'),
-    path('api/menu/<int:pk>/', views.ReastaurantMenuRetriveUpdateDestryView.as_view(), name='menu-list'),
+    path(
+        "public/restaurants/",
+        views.PublicRestaurantListView.as_view(),
+        name="public-restaurant-list",
+    ),
+    path(
+        "public/restaurants/<int:pk>/",
+        views.PublicRestaurantDetailView.as_view(),
+        name="public-restaurant-detail",
+    ),
+    path(
+        "public/restaurants/<int:pk>/menus/",
+        views.PublicRestaurantMenusView.as_view(),
+        name="public-restaurant-menus",
+    ),
+    path(
+        "restaurants/",
+        views.RestaurantListCreateView.as_view(),
+        name="restaurant-list-create",
+    ),
+    path(
+        "restaurants/<int:pk>/",
+        views.RestaurantRetrieveUpdateDestroyView.as_view(),
+        name="restaurant-detail",
+    ),
+    path("menus/", views.RestaurantMenuListCreateView.as_view(), name="menu-list"),
+    path(
+        "menus/<int:pk>/",
+        views.ReastaurantMenuRetriveUpdateDestryView.as_view(),
+        name="menu-detail",
+    ),
 ]
