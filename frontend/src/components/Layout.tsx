@@ -24,12 +24,12 @@ const navItems = [
 function Brand() {
   return (
     <div className="flex items-center gap-3 px-2">
-      <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-lg shadow-indigo-900/40">
+      <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 shadow-lg shadow-brand-900/40">
         <ChefHat className="size-6 text-white" />
       </div>
       <div>
         <p className="text-sm font-bold tracking-tight text-white">Remote Kitchen</p>
-        <p className="text-xs font-medium text-indigo-300/70">Restaurant Manager</p>
+        <p className="text-xs font-medium text-brand-200/80">Cloud Kitchen Manager</p>
       </div>
     </div>
   )
@@ -54,7 +54,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                 isActive
                   ? 'bg-white/10 text-white shadow-sm'
-                  : 'text-indigo-200/70 hover:bg-white/5 hover:text-white'
+                  : 'text-brand-200/80 hover:bg-white/5 hover:text-white'
               }`
             }
           >
@@ -71,7 +71,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-white">{user?.username}</p>
-            <p className="truncate text-xs text-indigo-300/70">
+            <p className="truncate text-xs text-brand-200/80">
               {user?.is_owner ? 'Owner' : user?.is_employee ? 'Employee' : 'User'}
             </p>
           </div>
@@ -83,7 +83,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               if (onNavigate) onNavigate()
               window.location.href = '/'
             }}
-            className="rounded-lg p-1.5 text-indigo-200/70 transition hover:bg-white/10 hover:text-white"
+            className="rounded-lg p-1.5 text-brand-200/80 transition hover:bg-white/10 hover:text-white"
             title="Log out"
           >
             <LogOut className="size-5" />
@@ -99,9 +99,9 @@ export default function Layout() {
   const { user } = useAuth()
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-cream">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 lg:block">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 bg-gradient-to-b from-stone-900 via-stone-900 to-brand-950 lg:block">
         <SidebarContent />
       </aside>
 
@@ -112,10 +112,10 @@ export default function Layout() {
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="absolute inset-y-0 left-0 w-64 bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 shadow-xl">
+          <aside className="absolute inset-y-0 left-0 w-64 bg-gradient-to-b from-stone-900 via-stone-900 to-brand-950 shadow-xl">
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute right-3 top-3 rounded-lg p-1.5 text-indigo-200/70 hover:bg-white/10 hover:text-white"
+              className="absolute right-3 top-3 rounded-lg p-1.5 text-brand-200/80 hover:bg-white/10 hover:text-white"
             >
               <X className="size-5" />
             </button>

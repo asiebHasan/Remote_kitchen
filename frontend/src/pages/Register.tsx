@@ -58,19 +58,19 @@ export default function Register() {
   const isOwnerMode = role === 'owner'
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 px-6 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-stone-900 via-stone-900 to-brand-950 px-6 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-3">
-          <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-lg shadow-indigo-900/50">
+          <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 shadow-lg shadow-brand-900/50">
             <ChefHat className="size-8 text-white" />
           </div>
           <div className="text-center">
             <h1 className="text-2xl font-bold tracking-tight text-white">
               {isOwnerMode ? 'Create your owner account' : 'Create your account'}
             </h1>
-            <p className="mt-1 text-sm text-indigo-300/70">
+            <p className="mt-1 text-sm text-brand-200/80">
               {isOwnerMode
-                ? 'Set up your restaurant management profile.'
+                ? 'Set up your cloud kitchen management profile.'
                 : 'Just browsing is free — sign up when you are ready to order.'}
             </p>
           </div>
@@ -132,7 +132,7 @@ export default function Register() {
           Already have an account?{' '}
           <Link
             to={`/login${next ? `?next=${encodeURIComponent(next)}` : ''}`}
-            className="font-semibold text-indigo-300 hover:text-indigo-200"
+            className="font-semibold text-brand-300 hover:text-brand-200"
           >
             Sign in
           </Link>

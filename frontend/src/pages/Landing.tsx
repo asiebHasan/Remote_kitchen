@@ -35,19 +35,19 @@ export default function Landing() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950">
-        <div className="absolute -right-24 -top-24 size-96 rounded-full bg-indigo-600/20 blur-3xl" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-stone-900 via-stone-900 to-brand-950">
+        <div className="absolute -right-24 -top-24 size-96 rounded-full bg-brand-600/20 blur-3xl" />
         <div className="absolute -bottom-32 -left-16 size-96 rounded-full bg-emerald-500/10 blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-indigo-200">
-              <Store className="size-3.5" /> Browse before you sign in
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-brand-100">
+              <Store className="size-3.5" /> Cloud kitchens, ready to order
             </span>
             <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
-              Order from the best restaurants near you.
+              Fresh food from cloud kitchens, delivered to your door.
             </h1>
             <p className="mt-4 max-w-xl text-lg text-slate-300">
-              Explore menus from every partner restaurant. Sign in only when you're ready to place
+              Explore menus from every partner kitchen. Sign in only when you're ready to place
               your order.
             </p>
             <div className="mt-8 flex max-w-xl items-center gap-2 rounded-2xl bg-white p-2 shadow-2xl">
@@ -55,7 +55,7 @@ export default function Landing() {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search restaurants or locations..."
+                placeholder="Search kitchens or locations..."
                 className="w-full bg-transparent py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
               />
             </div>
@@ -67,9 +67,9 @@ export default function Landing() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Restaurants</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Cloud kitchens</h2>
             <p className="mt-1 text-sm text-slate-500">
-              {filtered.length} available {filtered.length === 1 ? 'restaurant' : 'restaurants'}
+              {filtered.length} available {filtered.length === 1 ? 'kitchen' : 'kitchens'}
               {query ? ' matching your search' : ''}
             </p>
           </div>
@@ -85,11 +85,11 @@ export default function Landing() {
           <Card className="mt-6">
             <EmptyState
               icon={Store}
-              title={query ? 'No restaurants match your search' : 'No restaurants yet'}
+              title={query ? 'No kitchens match your search' : 'No kitchens yet'}
               description={
                 query
                   ? 'Try a different search term.'
-                  : 'Restaurants will appear here once they join.'
+                  : 'Kitchens will appear here once they join.'
               }
             />
           </Card>
@@ -98,12 +98,12 @@ export default function Landing() {
             {filtered.map((r) => (
               <Link key={r.id} to={`/restaurants/${r.id}`} className="group">
                 <Card className="h-full overflow-hidden p-0 transition group-hover:shadow-lg">
-                  <div className="flex h-28 items-center justify-center bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-700">
+                  <div className="flex h-28 items-center justify-center bg-gradient-to-br from-brand-500 via-brand-600 to-rose-600">
                     <Store className="size-10 text-white/90 transition group-hover:scale-110" />
                   </div>
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-3">
-                      <h3 className="text-lg font-semibold text-slate-900 group-hover:text-indigo-700">
+                      <h3 className="text-lg font-semibold text-slate-900 group-hover:text-brand-700">
                         {r.name}
                       </h3>
                       <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
@@ -113,7 +113,7 @@ export default function Landing() {
                     <p className="mt-1.5 flex items-start gap-1.5 text-sm text-slate-500">
                       <MapPin className="mt-0.5 size-4 shrink-0" /> {r.address}
                     </p>
-                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-indigo-600">
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-600">
                       View menu <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
                     </span>
                   </div>

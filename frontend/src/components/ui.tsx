@@ -12,7 +12,7 @@ type Size = 'sm' | 'md' | 'lg'
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-indigo-600 shadow-sm',
+    'bg-brand-600 text-white hover:bg-brand-700 focus-visible:outline-brand-600 shadow-sm',
   secondary:
     'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 focus-visible:outline-slate-400',
   danger:
@@ -75,7 +75,7 @@ export function Input({ label, error, hint, className = '', id, ...props }: Inpu
         className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:ring-2 ${
           error
             ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
-            : 'border-slate-300 focus:border-indigo-400 focus:ring-indigo-100'
+            : 'border-slate-300 focus:border-brand-400 focus:ring-brand-100'
         } ${className}`}
         {...props}
       />
@@ -104,7 +104,7 @@ export function Textarea({ label, error, className = '', id, ...props }: Textare
         className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:ring-2 ${
           error
             ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
-            : 'border-slate-300 focus:border-indigo-400 focus:ring-indigo-100'
+            : 'border-slate-300 focus:border-brand-400 focus:ring-brand-100'
         } ${className}`}
         {...props}
       />
@@ -128,7 +128,7 @@ export function Select({ label, className = '', id, children, ...props }: Select
       )}
       <select
         id={inputId}
-        className={`w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 transition focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 ${className}`}
+        className={`w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 transition focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 ${className}`}
         {...props}
       >
         {children}
@@ -176,7 +176,7 @@ export function Badge({
 }
 
 export function Spinner({ className = '' }: { className?: string }) {
-  return <Loader2 className={`size-6 animate-spin text-indigo-600 ${className}`} />
+  return <Loader2 className={`size-6 animate-spin text-brand-600 ${className}`} />
 }
 
 export function FullPageLoader() {

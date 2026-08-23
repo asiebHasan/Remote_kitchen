@@ -4,17 +4,17 @@ export function StatCard({
   label,
   value,
   icon: Icon,
-  tone = 'indigo',
+  tone = 'brand',
   sub,
 }: {
   label: string
   value: string | number
   icon: LucideIcon
-  tone?: 'indigo' | 'emerald' | 'amber' | 'rose' | 'sky' | 'violet'
+  tone?: 'brand' | 'emerald' | 'amber' | 'rose' | 'sky' | 'violet'
   sub?: string
 }) {
   const tones: Record<string, string> = {
-    indigo: 'bg-indigo-50 text-indigo-600',
+    brand: 'bg-brand-50 text-brand-600',
     emerald: 'bg-emerald-50 text-emerald-600',
     amber: 'bg-amber-50 text-amber-600',
     rose: 'bg-rose-50 text-rose-600',

@@ -93,12 +93,12 @@ export default function RestaurantMenu() {
         to="/"
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-800"
       >
-        <ArrowLeft className="size-4" /> All restaurants
+        <ArrowLeft className="size-4" /> All kitchens
       </Link>
 
       {/* Restaurant header */}
       <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex h-32 items-center justify-center bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-700">
+        <div className="flex h-32 items-center justify-center bg-gradient-to-br from-brand-500 via-brand-600 to-rose-600">
           <Store className="size-12 text-white/90" />
         </div>
         <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
@@ -159,10 +159,10 @@ export default function RestaurantMenu() {
         <div className="sticky bottom-4 z-20 mt-10">
           <Link
             to="/cart"
-            className="mx-auto flex max-w-2xl items-center justify-between rounded-2xl bg-slate-900 px-5 py-3.5 text-white shadow-2xl transition hover:bg-slate-800"
+            className="mx-auto flex max-w-2xl items-center justify-between rounded-2xl bg-stone-900 px-5 py-3.5 text-white shadow-2xl transition hover:bg-stone-800"
           >
             <span className="inline-flex items-center gap-2.5 text-sm font-semibold">
-              <span className="flex size-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold">
+              <span className="flex size-8 items-center justify-center rounded-full bg-brand-600 text-xs font-bold">
                 {count}
               </span>
               {cartRestaurant?.name} · View cart

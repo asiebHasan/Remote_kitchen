@@ -92,7 +92,7 @@ export default function Cart() {
                   </button>
                 </div>
                 <p className="w-20 text-right font-semibold text-slate-900">
-                  {formatCurrency(item.price * item.quantity)}
+                  {formatCurrency(Number(item.price) * item.quantity)}
                 </p>
                 <button
                   onClick={() => removeItem(item.menuId)}

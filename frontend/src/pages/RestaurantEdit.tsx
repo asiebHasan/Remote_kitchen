@@ -54,12 +54,12 @@ export default function RestaurantEdit() {
 
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">Edit restaurant</h1>
-        <p className="mt-1 text-sm text-slate-500">Update the details of this venue.</p>
+        <p className="mt-1 text-sm text-slate-500">Update the details of this cloud kitchen.</p>
       </div>
 
       <Card className="p-6">
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white">
+          <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white">
             <Store className="size-6" />
           </div>
           <div>

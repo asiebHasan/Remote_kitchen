@@ -64,7 +64,7 @@ export default function Dashboard() {
   }
 
   const cards = [
-    { label: 'Restaurants', value: stats.restaurants, icon: Store, tone: 'indigo' as const },
+    { label: 'Kitchens', value: stats.restaurants, icon: Store, tone: 'brand' as const },
     { label: 'Menu Items', value: stats.menus, icon: UtensilsCrossed, tone: 'sky' as const },
     { label: 'Total Orders', value: stats.orders, icon: ClipboardList, tone: 'violet' as const },
     { label: 'Revenue', value: formatCurrency(stats.revenue), icon: Banknote, tone: 'emerald' as const },
@@ -76,7 +76,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-500">An overview of your restaurant business.</p>
+        <p className="mt-1 text-sm text-slate-500">An overview of your cloud kitchen business.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -90,7 +90,7 @@ export default function Dashboard() {
           <h2 className="text-base font-semibold text-slate-900">Recent orders</h2>
           <Link
             to="/app/orders"
-            className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700"
           >
             View all <ArrowRight className="size-4" />
           </Link>

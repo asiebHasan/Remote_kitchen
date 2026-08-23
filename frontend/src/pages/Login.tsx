@@ -7,33 +7,33 @@ import { Button, Input } from '../components/ui'
 function AuthShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
-      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-12 text-white lg:flex">
-        <div className="absolute -right-24 -top-24 size-96 rounded-full bg-indigo-600/20 blur-3xl" />
+      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-stone-900 via-stone-900 to-brand-950 p-12 text-white lg:flex">
+        <div className="absolute -right-24 -top-24 size-96 rounded-full bg-brand-600/20 blur-3xl" />
         <div className="absolute -bottom-32 -left-16 size-96 rounded-full bg-emerald-500/10 blur-3xl" />
 
         <div className="relative flex items-center gap-3">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-lg">
+          <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 shadow-lg">
             <ChefHat className="size-7 text-white" />
           </div>
           <div>
             <p className="text-lg font-bold tracking-tight">Remote Kitchen</p>
-            <p className="text-sm text-indigo-300/80">Restaurant Manager</p>
+            <p className="text-sm text-brand-200/80">Cloud Kitchen Manager</p>
           </div>
         </div>
 
         <div className="relative space-y-8">
           <h1 className="max-w-md text-4xl font-extrabold leading-tight tracking-tight">
-            Run your restaurants from one beautiful dashboard.
+            Run your cloud kitchens from one beautiful dashboard.
           </h1>
           <div className="space-y-4">
             {[
-              { icon: Store, title: 'Manage restaurants', desc: 'Add and update your venues in seconds.' },
-              { icon: Users, title: 'Grow your team', desc: 'Onboard employees across every location.' },
+              { icon: Store, title: 'Manage kitchens', desc: 'Add and update your venues in seconds.' },
+              { icon: Users, title: 'Grow your team', desc: 'Onboard employees across every kitchen.' },
               { icon: ClipboardList, title: 'Track every order', desc: 'Follow orders and payments in real time.' },
             ].map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex items-start gap-4">
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                  <Icon className="size-5 text-indigo-300" />
+                  <Icon className="size-5 text-brand-300" />
                 </div>
                 <div>
                   <p className="font-semibold">{title}</p>
@@ -83,7 +83,7 @@ export default function Login() {
     <AuthShell>
       <div className="mb-8 lg:hidden">
         <div className="flex items-center gap-2">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-indigo-600">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-brand-600">
             <ChefHat className="size-6 text-white" />
           </div>
           <p className="text-lg font-bold text-slate-900">Remote Kitchen</p>
@@ -125,15 +125,15 @@ export default function Login() {
 
       <p className="mt-8 text-center text-sm text-slate-500">
         Don&apos;t have an account?{' '}
-        <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-700">
+        <Link to="/register" className="font-semibold text-brand-600 hover:text-brand-700">
           Sign up
         </Link>
       </p>
       <p className="mt-2 text-center text-sm text-slate-500">
-        Are you a restaurant owner?{' '}
+        Are you a kitchen owner?{' '}
         <Link
           to="/register?role=owner"
-          className="font-semibold text-indigo-600 hover:text-indigo-700"
+          className="font-semibold text-brand-600 hover:text-brand-700"
         >
           Create an owner account
         </Link>

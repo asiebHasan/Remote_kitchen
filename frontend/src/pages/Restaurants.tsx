@@ -89,7 +89,7 @@ export default function Restaurants() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">Restaurants</h1>
-          <p className="mt-1 text-sm text-slate-500">Manage the venues you own.</p>
+          <p className="mt-1 text-sm text-slate-500">Manage the cloud kitchens you own.</p>
         </div>
         <Button onClick={() => setModalOpen(true)}>
           <Plus className="size-4" /> Add restaurant
@@ -124,13 +124,13 @@ export default function Restaurants() {
           {restaurants.map((r) => (
             <Card key={r.id} className="flex flex-col p-5 transition hover:shadow-md">
               <div className="flex items-start justify-between">
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white shadow-sm">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-sm">
                   <Store className="size-6" />
                 </div>
                 <div className="flex gap-1">
                   <Link
                     to={`/app/restaurants/${r.id}`}
-                    className="rounded-lg p-2 text-slate-400 transition hover:bg-indigo-50 hover:text-indigo-600"
+                    className="rounded-lg p-2 text-slate-400 transition hover:bg-brand-50 hover:text-brand-600"
                     title="Edit"
                   >
                     <Pencil className="size-4" />
@@ -156,7 +156,7 @@ export default function Restaurants() {
                 <span className="text-xs text-slate-400">Added {formatDate(r.created_at)}</span>
                 <Link
                   to={`/app/menus?restaurant=${r.id}`}
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:text-brand-700"
                 >
                   <UtensilsCrossed className="size-3.5" /> Menus
                 </Link>

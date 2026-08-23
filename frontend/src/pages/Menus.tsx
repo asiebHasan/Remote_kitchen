@@ -229,7 +229,7 @@ export default function Menus() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => openEdit(m)}
-                        className="rounded-lg p-2 text-slate-400 transition hover:bg-indigo-50 hover:text-indigo-600"
+                        className="rounded-lg p-2 text-slate-400 transition hover:bg-brand-50 hover:text-brand-600"
                         title="Edit"
                       >
                         <Pencil className="size-4" />
@@ -326,7 +326,7 @@ export default function Menus() {
                 type="checkbox"
                 checked={form.is_available}
                 onChange={(e) => setForm((p) => ({ ...p, is_available: e.target.checked }))}
-                className="size-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                className="size-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
               />
               Available
             </label>
