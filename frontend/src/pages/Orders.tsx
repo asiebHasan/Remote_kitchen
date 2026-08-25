@@ -5,6 +5,7 @@ import { api } from '../lib/api'
 import { Badge, Card, Select, Spinner } from '../components/ui'
 import { EmptyState } from '../components/EmptyState'
 import { formatCurrency, formatDateTime } from '../lib/format'
+import { orderStatusInfo } from '../lib/orderStatus'
 
 interface Restaurant {
   id: number
@@ -25,6 +26,7 @@ interface Order {
   restaurant_name: string
   ordered_items: OrderedItem[]
   payment_status: boolean
+  status: string
   total_price: string
   created_at: string
 }
@@ -128,6 +130,7 @@ export default function Orders() {
                       <th className="px-6 py-3 font-semibold">Customer</th>
                       <th className="px-6 py-3 font-semibold">Items</th>
                       <th className="px-6 py-3 font-semibold">Total</th>
+                      <th className="px-6 py-3 font-semibold">Status</th>
                       <th className="px-6 py-3 font-semibold">Payment</th>
                       <th className="px-6 py-3 font-semibold">Date</th>
                       <th className="px-6 py-3 font-semibold">Action</th>
@@ -150,6 +153,11 @@ export default function Orders() {
                         </td>
                         <td className="px-6 py-4 font-semibold text-slate-900">
                           {formatCurrency(o.total_price)}
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge tone={orderStatusInfo(o.status).tone}>
+                            {orderStatusInfo(o.status).label}
+                          </Badge>
                         </td>
                         <td className="px-6 py-4">
                           <Badge tone={o.payment_status ? 'success' : 'pending'}>

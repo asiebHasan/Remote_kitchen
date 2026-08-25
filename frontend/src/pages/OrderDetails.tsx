@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Trash2 } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, Trash2 } from 'lucide-react'
 import { api } from '../lib/api'
-import { Badge, Button, Card, Spinner } from '../components/ui'
+import { Badge, Button, Card, Select, Spinner } from '../components/ui'
 import { formatCurrency, formatDateTime } from '../lib/format'
+import { ORDER_STATUS_KEYS, orderStatusInfo } from '../lib/orderStatus'
 
 interface OrderedItem {
   id: number
@@ -19,6 +20,7 @@ interface Order {
   restaurant_name: string
   ordered_items: OrderedItem[]
   payment_status: boolean
+  status: string
   total_price: string
   created_at: string
 }
@@ -30,6 +32,8 @@ export default function OrderDetails() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [deleting, setDeleting] = useState(false)
+  const [savingStatus, setSavingStatus] = useState(false)
+  const [savedNote, setSavedNote] = useState('')
 
   useEffect(() => {
     api(`/api/orders/${id}/`)
@@ -37,6 +41,26 @@ export default function OrderDetails() {
       .catch((err) => setError((err as Error).message))
       .finally(() => setLoading(false))
   }, [id])
+
+  async function handleStatusChange(nextStatus: string) {
+    if (!order || nextStatus === order.status) return
+    setSavingStatus(true)
+    setError('')
+    setSavedNote('')
+    try {
+      const updated = await api<Order>(`/api/orders/${id}/`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: nextStatus }),
+      })
+      setOrder(updated)
+      setSavedNote(`Status updated to "${orderStatusInfo(nextStatus).label}".`)
+      window.setTimeout(() => setSavedNote(''), 2500)
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setSavingStatus(false)
+    }
+  }
 
   async function handleDelete() {
     if (!window.confirm(`Delete order #${id}?`)) return
@@ -82,6 +106,9 @@ export default function OrderDetails() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">Order #{order.id}</h1>
+            <Badge tone={orderStatusInfo(order.status).tone}>
+              {orderStatusInfo(order.status).label}
+            </Badge>
             <Badge tone={order.payment_status ? 'success' : 'pending'}>
               {order.payment_status ? 'Paid' : 'Payment pending'}
             </Badge>
@@ -111,6 +138,32 @@ export default function OrderDetails() {
           <p className="mt-1.5 text-xl font-bold text-slate-900">{formatCurrency(order.total_price)}</p>
         </Card>
       </div>
+
+      <Card className="p-5">
+        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Order status</p>
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Select
+            className="sm:w-56"
+            value={order.status}
+            disabled={savingStatus}
+            onChange={(e) => handleStatusChange(e.target.value)}
+          >
+            {ORDER_STATUS_KEYS.map((key) => (
+              <option key={key} value={key}>
+                {orderStatusInfo(key).label}
+              </option>
+            ))}
+          </Select>
+          <p className="text-xs text-slate-500">
+            Keep customers informed as the order is prepared and delivered.
+          </p>
+        </div>
+        {savedNote && (
+          <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700">
+            <CheckCircle2 className="size-4" /> {savedNote}
+          </p>
+        )}
+      </Card>
 
       <Card>
         <div className="border-b border-slate-200 px-6 py-4">

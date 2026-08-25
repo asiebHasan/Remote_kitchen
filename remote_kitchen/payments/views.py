@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -24,8 +25,12 @@ class PaymentProcessAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         order_id = request.data.get("order_id")
+        # The customer who placed the order (or the restaurant owner) may pay.
         order = get_object_or_404(
-            Order, id=order_id, restaurant__owner=request.user
+            Order.objects.filter(
+                Q(user=request.user) | Q(restaurant__owner=request.user)
+            ),
+            id=order_id,
         )
         total_cost = order.total_price
 

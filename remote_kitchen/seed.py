@@ -82,18 +82,19 @@ def seed():
 
     if Order.objects.count() == 0:
         sample_orders = [
-            (restaurants[0], [("Margherita Pizza", 2), ("Grilled Salmon", 1)], True),
-            (restaurants[0], [("Truffle Pasta", 1)], False),
-            (restaurants[1], [("Butter Chicken", 2), ("Veg Biryani", 1)], True),
-            (restaurants[2], [("Clam Chowder", 1)], False),
+            (restaurants[0], [("Margherita Pizza", 2), ("Grilled Salmon", 1)], True, "delivered"),
+            (restaurants[0], [("Truffle Pasta", 1)], False, "preparing"),
+            (restaurants[1], [("Butter Chicken", 2), ("Veg Biryani", 1)], True, "ready"),
+            (restaurants[2], [("Clam Chowder", 1)], False, "pending"),
         ]
-        for resto, items, paid in sample_orders:
+        for resto, items, paid, status_label in sample_orders:
             total = sum(menus[n].price * q for n, q in items)
             order = Order.objects.create(
                 user=employee_user,
                 restaurant=resto,
                 total_price=total,
                 payment_status=paid,
+                status=status_label,
             )
             for n, q in items:
                 OrderedItem.objects.create(

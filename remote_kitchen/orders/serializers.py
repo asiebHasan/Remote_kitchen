@@ -33,9 +33,11 @@ class OrderSerializer(serializers.ModelSerializer):
             "restaurant_name",
             "ordered_items",
             "payment_status",
+            "status",
             "total_price",
             "created_at",
         ]
+        read_only_fields = ["payment_status"]
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):

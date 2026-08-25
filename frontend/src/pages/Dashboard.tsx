@@ -14,6 +14,7 @@ import { StatCard } from '../components/StatCard'
 import { Badge, Card, Spinner } from '../components/ui'
 import { EmptyState } from '../components/EmptyState'
 import { formatCurrency, formatDateTime } from '../lib/format'
+import { orderStatusInfo } from '../lib/orderStatus'
 
 interface RecentOrder {
   id: number
@@ -21,6 +22,7 @@ interface RecentOrder {
   restaurant_name: string
   total_price: string
   payment_status: boolean
+  status: string
   item_count: number
   created_at: string
 }
@@ -110,6 +112,7 @@ export default function Dashboard() {
                   <th className="px-6 py-3 font-semibold">Restaurant</th>
                   <th className="px-6 py-3 font-semibold">Items</th>
                   <th className="px-6 py-3 font-semibold">Total</th>
+                  <th className="px-6 py-3 font-semibold">Status</th>
                   <th className="px-6 py-3 font-semibold">Payment</th>
                   <th className="px-6 py-3 font-semibold">Date</th>
                 </tr>
@@ -123,6 +126,11 @@ export default function Dashboard() {
                     <td className="px-6 py-3.5 text-slate-700">{o.item_count}</td>
                     <td className="px-6 py-3.5 font-semibold text-slate-900">
                       {formatCurrency(o.total_price)}
+                    </td>
+                    <td className="px-6 py-3.5">
+                      <Badge tone={orderStatusInfo(o.status).tone}>
+                        {orderStatusInfo(o.status).label}
+                      </Badge>
                     </td>
                     <td className="px-6 py-3.5">
                       <Badge tone={o.payment_status ? 'success' : 'pending'}>

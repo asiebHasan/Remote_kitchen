@@ -38,6 +38,7 @@ class DashboardStatsView(APIView):
                     "restaurant_name": o.restaurant.name,
                     "total_price": str(o.total_price),
                     "payment_status": o.payment_status,
+                    "status": o.status,
                     "item_count": o.ordered_items.count(),
                     "created_at": o.created_at.isoformat(),
                 }

@@ -79,7 +79,7 @@ Open http://localhost:5173.
 | `/api/orders/` | GET | Owner | Orders for owner's restaurants |
 | `/api/orders/` | POST | Signed in | Create a customer order (with items) |
 | `/api/orders/mine/` | GET | Signed in | Customer's own orders |
-| `/api/orders/<id>/` | GET/PUT/DELETE | Signed in | Order detail (owner or customer) |
+| `/api/orders/<id>/` | GET/PATCH/PUT/DELETE | Signed in | Order detail; owners/employees can update status |
 | `/api/dashboard/stats/` | GET | Signed in | Dashboard KPIs |
 | `/api/payment/token/` | GET | Signed in | Braintree client token |
 | `/api/payment/process/` | POST | Signed in | Process payment (sandbox) |
@@ -88,6 +88,17 @@ Open http://localhost:5173.
 
 - Payment views referenced non-existent `Order` fields (`total_cost`, `paid`, `braintree_id`); now use `total_price` / `payment_status`.
 - Added missing Braintree client-token endpoint and a working sandbox payment flow.
+- Fixed payment authorization so the **customer who placed the order** can pay for it (previously only the restaurant owner could, breaking checkout).
 - Added customer order creation with line items and a customer "my orders" endpoint.
 - Fixed employee serializer field names and list view queryset.
+- Employees can now view and manage orders at the restaurants they work for.
 - Restructured template-rendering routes into pure JSON API endpoints.
+
+## Order status tracking
+
+Orders carry a lifecycle status (`pending` → `preparing` → `ready` → `delivered`, or `cancelled`):
+
+- Owners and employees can change the status from the admin **Order details** page.
+- Customers see the live status on their **My orders** page.
+- The dashboard recent-orders table and admin orders list both show a status badge.
+- Only the restaurant owner or an employee of that restaurant may update the status.

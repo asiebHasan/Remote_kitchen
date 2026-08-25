@@ -3,12 +3,29 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
 from .models import Order
+from employees.models import Employee
 from restaurants.models import Restaurant
 from .serializers import OrderSerializer, OrderCreateSerializer
 
 
+def managed_restaurant_ids(user):
+    """Return ids of restaurants the user owns or works for."""
+    owned = Restaurant.objects.filter(owner=user).values_list("id", flat=True)
+    employed = Employee.objects.filter(employee=user).values_list(
+        "restaurant_id", flat=True
+    )
+    return set(owned) | set(employed)
+
+
+def manages_restaurant(user, restaurant):
+    """True when the user owns the restaurant or is an employee there."""
+    if restaurant.owner_id == user.id:
+        return True
+    return Employee.objects.filter(employee=user, restaurant=restaurant).exists()
+
+
 class OrderListCreateView(generics.ListCreateAPIView):
-    """GET lists orders for the owner's restaurant; POST creates a customer order."""
+    """GET lists orders for the owner's/employee's restaurants; POST creates a customer order."""
 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -16,10 +33,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
         restaurant_id = self.request.query_params.get("restaurant")
 
         if restaurant_id:
-            owned = Restaurant.objects.filter(owner=self.request.user).values_list(
-                "id", flat=True
-            )
-            if int(restaurant_id) not in owned:
+            if int(restaurant_id) not in managed_restaurant_ids(self.request.user):
                 return Order.objects.none()
             return Order.objects.filter(restaurant_id=restaurant_id)
         return Order.objects.none()
@@ -54,7 +68,19 @@ class OrderRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        owned = Restaurant.objects.filter(owner=self.request.user).values_list(
-            "id", flat=True
+        return Order.objects.filter(
+            Q(restaurant_id__in=managed_restaurant_ids(self.request.user))
+            | Q(user=self.request.user)
         )
-        return Order.objects.filter(Q(restaurant_id__in=owned) | Q(user=self.request.user))
+
+    def update(self, request, *args, **kwargs):
+        if "status" in request.data:
+            order = self.get_object()
+            if not manages_restaurant(request.user, order.restaurant):
+                return Response(
+                    {
+                        "detail": "Only the restaurant owner or an employee can update the order status."
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+        return super().update(request, *args, **kwargs)

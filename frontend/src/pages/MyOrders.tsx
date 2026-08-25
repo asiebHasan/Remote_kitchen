@@ -5,6 +5,7 @@ import { api } from '../lib/api'
 import { Badge, Button, Card, Spinner } from '../components/ui'
 import { EmptyState } from '../components/EmptyState'
 import { formatCurrency, formatDateTime } from '../lib/format'
+import { orderStatusInfo } from '../lib/orderStatus'
 
 interface OrderedItem {
   id: number
@@ -19,6 +20,7 @@ interface Order {
   restaurant_name: string
   ordered_items: OrderedItem[]
   payment_status: boolean
+  status: string
   total_price: string
   created_at: string
 }
@@ -75,6 +77,7 @@ export default function MyOrders() {
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
                     <h2 className="font-semibold text-slate-900">Order #{o.id}</h2>
+                    <Badge tone={orderStatusInfo(o.status).tone}>{orderStatusInfo(o.status).label}</Badge>
                     <Badge tone={o.payment_status ? 'success' : 'pending'}>
                       {o.payment_status ? 'Paid' : 'Payment pending'}
                     </Badge>
