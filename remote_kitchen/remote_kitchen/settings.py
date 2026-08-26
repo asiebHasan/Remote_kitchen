@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "dashboard",
     "orders",
     "payments",
+    "assistant",
     "fontawesomefree",
 ]
 

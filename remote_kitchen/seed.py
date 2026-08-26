@@ -39,15 +39,18 @@ def seed():
         employee_user.save()
 
     restos = [
-        {"name": "The Golden Fork", "address": "12 Elm Street, Springfield"},
-        {"name": "Saffron & Spice", "address": "88 Curry Lane, Springfield"},
-        {"name": "Harbor Grill", "address": "3 Pier Road, Bayview"},
+        {"name": "The Golden Fork", "address": "12 Elm Street, Springfield", "latitude": 39.7817, "longitude": -89.6501},
+        {"name": "Saffron & Spice", "address": "88 Curry Lane, Springfield", "latitude": 39.7835, "longitude": -89.6440},
+        {"name": "Harbor Grill", "address": "3 Pier Road, Bayview", "latitude": 37.7540, "longitude": -122.4020},
     ]
     restaurants = []
     for r in restos:
         resto, _ = Restaurant.objects.get_or_create(
             name=r["name"], address=r["address"], owner=owner
         )
+        resto.latitude = r["latitude"]
+        resto.longitude = r["longitude"]
+        resto.save()
         restaurants.append(resto)
 
     menus_data = [

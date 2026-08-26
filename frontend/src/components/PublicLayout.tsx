@@ -2,6 +2,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { ChefHat, LogIn, LogOut, Package, ShoppingBag, LayoutDashboard } from 'lucide-react'
 import { useAuth } from '../lib/auth'
 import { useCart } from '../lib/cart'
+import AssistantWidget from './AssistantWidget'
 
 function PublicHeader() {
   const { user, logout } = useAuth()
@@ -127,6 +128,7 @@ export default function PublicLayout() {
         <Outlet />
       </main>
       <PublicFooter />
+      <AssistantWidget />
     </div>
   )
 }

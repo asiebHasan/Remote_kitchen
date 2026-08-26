@@ -71,6 +71,7 @@ Open http://localhost:5173.
 | `/api/public/restaurants/` | GET | Public | All restaurants with menu counts |
 | `/api/public/restaurants/<id>/` | GET | Public | Restaurant detail |
 | `/api/public/restaurants/<id>/menus/` | GET | Public | Available menu items |
+| `/api/assistant/` | POST | Public | Natural-language dish/restaurant search |
 | `/api/restaurants/` | GET/POST | Signed in | Owner's restaurants |
 | `/api/restaurants/<id>/` | GET/PUT/DELETE | Signed in | Restaurant detail |
 | `/api/menus/?restaurant=<id>` | GET/POST | Signed in | Menu items |
@@ -102,3 +103,18 @@ Orders carry a lifecycle status (`pending` → `preparing` → `ready` → `deli
 - Customers see the live status on their **My orders** page.
 - The dashboard recent-orders table and admin orders list both show a status badge.
 - Only the restaurant owner or an employee of that restaurant may update the status.
+
+## Kitchen Assistant (AI chat)
+
+A chat widget on the public site lets customers ask for dishes in natural language:
+
+- "Which restaurant has pizza?" — finds every dish matching the query.
+- "I want something vegetarian" — filters by dietary preference.
+- "What's under $15?" — filters by budget.
+- "Closest restaurant with pasta" — sorts results by distance once the user shares
+  their location (browser geolocation or a demo location), or highlights where each
+  dish is served.
+- "something at Springfield" — narrows results to restaurants in that area.
+
+It is a rule-based search over the menu database (`POST /api/assistant/`) — no
+external LLM is involved, so it always returns instant, deterministic answers.
