@@ -19,6 +19,13 @@ start.sh           Runs both services
 
 The frontend dev server proxies `/api` requests to the backend, so a single port (5173) serves the whole app.
 
+## Authentication
+
+Session login is supported, and the API also issues a **token** on `login`/`register`/`me`.
+The frontend stores it in `localStorage` and sends it as `Authorization: Token <token>`,
+so authentication keeps working even in sandboxed preview iframes where cookies may be
+blocked.
+
 ## Getting started
 
 ```bash

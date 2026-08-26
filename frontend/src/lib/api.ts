@@ -3,6 +3,17 @@ function readCookie(name: string): string | null {
   return match ? decodeURIComponent(match[1]) : null
 }
 
+const TOKEN_KEY = 'rk_token'
+
+export function getStoredToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY)
+}
+
+export function storeToken(token: string | null): void {
+  if (token) localStorage.setItem(TOKEN_KEY, token)
+  else localStorage.removeItem(TOKEN_KEY)
+}
+
 let csrfPromise: Promise<string | null> | null = null
 
 function getCsrfToken(): Promise<string | null> {
@@ -18,6 +29,9 @@ function getCsrfToken(): Promise<string | null> {
 export async function api<T = any>(path: string, options: RequestInit = {}): Promise<T> {
   const method = (options.method ?? 'GET').toUpperCase()
   const headers = new Headers(options.headers)
+
+  const token = getStoredToken()
+  if (token) headers.set('Authorization', `Token ${token}`)
 
   if (options.body && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json')

@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT
 from rest_framework.views import APIView
@@ -57,6 +58,7 @@ class EmailValidationView(View):
 
 
 def _user_payload(user):
+    token, _ = Token.objects.get_or_create(user=user)
     return {
         "id": user.id,
         "username": user.username,
@@ -67,6 +69,7 @@ def _user_payload(user):
         "first_name": user.first_name,
         "last_name": user.last_name,
         "date_joined": user.date_joined.isoformat(),
+        "token": token.key,
     }
 
 

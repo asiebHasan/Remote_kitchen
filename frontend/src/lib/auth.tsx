@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { api } from './api'
+import { api, storeToken } from './api'
 
 export interface User {
   id: number
@@ -11,6 +11,7 @@ export interface User {
   first_name: string
   last_name: string
   date_joined: string
+  token?: string
 }
 
 export interface RegisterInput {
@@ -52,6 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then((u) => {
         if (!active) return
         setUser(u)
+        if (u.token) storeToken(u.token)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(u))
       })
       .catch(() => {
@@ -77,6 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           body: JSON.stringify({ username, password }),
         })
         setUser(u)
+        if (u.token) storeToken(u.token)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(u))
         return u
       },
@@ -86,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           body: JSON.stringify(input),
         })
         setUser(data.user)
+        if (data.user.token) storeToken(data.user.token)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user))
         return data.user
       },
@@ -95,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } catch {
           // ignore
         }
+        storeToken(null)
         setUser(null)
         localStorage.removeItem(STORAGE_KEY)
       },
